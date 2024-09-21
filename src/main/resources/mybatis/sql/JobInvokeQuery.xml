@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.abs.wfs.batch.dao.mybatis.batchJob.mapper.BatchJobInvokeMapper">
+
+    <select id="batchJobInvokeQuery"
+            resultType="com.abs.wfs.batch.dao.mybatis.batchJob.vo.BatchJobInvokeQueryDto">
+        SELECT *
+        FROM (
+                 SELECT
+                     job_id,
+                     job_typ,
+                     job_desc,
+                     max_occur,
+                     crnt_occur,
+                     HOUR_DIFF,
+                     MIN_DIFF,
+                     TOTAL_DIFF,
+                     INVOKE_UNIT,
+                     INVOKE_VAL,
+                     USE_STAT_CD,
+                     CASE
+                         -- 시간 단위
+                         WHEN INVOKE_UNIT = 'H' AND MOD(TOTAL_DIFF,　INVOKE_VAL * 60) = 0 THEN 'Y'
+                         WHEN INVOKE_UNIT = 'M' AND MOD(TOTAL_DIFF, INVOKE_VAL) = 0 THEN 'Y' ELSE 'N'
+                         END AS INVOKE_YN
+                 FROM (
+                          SELECT
+                              EXTRACT(HOUR FROM (SYSDATE - JOB_START_DT)) * 60 AS HOUR_DIFF,
+                              EXTRACT(MINUTE FROM (SYSDATE - JOB_START_DT)) AS MIN_DIFF,
+                              TO_NUMBER(EXTRACT(HOUR FROM (SYSDATE - JOB_START_DT)) * 60) + TO_NUMBER(EXTRACT(MINUTE FROM (SYSDATE - JOB_START_DT))) AS TOTAL_DIFF,
+                              INVOKE_UNIT,
+                              INVOKE_VAL,
+                              job_id,
+                              job_typ,
+                              job_desc,
+                              max_occur,
+                              crnt_occur,
+                              USE_STAT_CD
+                          FROM
+                              WN_BATCH_JOB
+                      )
+             )
+        WHERE 1=1
+          AND INVOKE_YN = 'Y'
+          AND USE_STAT_CD = 'Usable'
+
+    </select>
+</mapper>
