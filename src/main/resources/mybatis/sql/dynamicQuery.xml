@@ -3,7 +3,9 @@
 
 <mapper namespace="com.abs.wfs.batch.dao.mybatis.dynamicQuery.mapper.DynamicQueryMapper">
 
-    <select id="executeDynamicQuery" resultType="map">
+    <select id="executeDynamicQuery"
+            parameterType="com.abs.wfs.batch.dao.mybatis.dynamicQuery.DynamicQueryDto"
+            resultType="map">
         ${statement}
     </select>
 </mapper>

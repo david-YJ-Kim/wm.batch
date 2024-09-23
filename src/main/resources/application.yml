@@ -5,7 +5,7 @@ server:
   port: 15001
   shutdown: graceful
   servlet:
-    contextPath: /wm
+    contextPath: /batch
 
 gracefulShutdown:
   awaitTerminateTime: 60
