@@ -1,46 +1,33 @@
-package com.abs.wfs.batch.dao.jpa.batchMsgJobPara.model;
+package com.abs.wfs.batch.dao.jpa.batchMsgJob.vo;
 
+
+import com.abs.wfs.batch.dao.jpa.batchMsgJob.model.WhBatchMsgJob;
+import com.abs.wfs.batch.dao.jpa.batchMsgJob.model.WnBatchMsgJob;
 import com.abs.wfs.batch.util.code.BatchJobType;
 import com.abs.wfs.batch.util.code.UseStatCd;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.sql.Timestamp;
 
 @NoArgsConstructor
-@Getter
-@Setter
-@Entity(name = "WH_BATCH_MSG_JOB_PARA")
-public class WhBatchMsgJobPara {
+@Data
+public class WhBatchMsgJobDto {
 
-
-    @Id
-    @GenericGenerator(name = "WH_BATCH_MSG_JOB_PARA_SEQ_GENERATOR", strategy = "com.abs.wfs.batch.util.ObjIdGenerator")
-    @GeneratedValue(generator = "WH_BATCH_MSG_JOB_PARA_SEQ_GENERATOR")
-    @Column(name = "OBJ_ID")
-    private String objId;
     private String refObjId;
-
     private String siteId;
     private String jobId;
-
-    @Enumerated(EnumType.STRING)
     private BatchJobType jobTyp;
-
-    private String paraNm;
-    private String paraQuery;
+    private String srcSys;
+    private String tgtSys;
+    private String cid;
+    private String payloadFormat;
     private String evntNm;
     private String prevEvntNm;
     private String cstmEvntNm;
     private String prevCstmEvntNm;
-
-    @Enumerated(EnumType.STRING)
     private UseStatCd useStatCd;
-
     private String rsnCd;
     private String trnsCm;
     private String crtUserId;
@@ -50,16 +37,16 @@ public class WhBatchMsgJobPara {
     private Timestamp fnlEvntDt;
     private String tid;
 
-
     @Builder
-    public WhBatchMsgJobPara(String objId, String refObjId, String siteId, String jobId, BatchJobType jobTyp, String paraNm, String paraQuery, String evntNm, String prevEvntNm, String cstmEvntNm, String prevCstmEvntNm, UseStatCd useStatCd, String rsnCd, String trnsCm, String crtUserId, Timestamp crtDt, String mdfyUserId, Timestamp mdfyDt, Timestamp fnlEvntDt, String tid) {
-        this.objId = objId;
+    public WhBatchMsgJobDto(String refObjId, String siteId, String jobId, BatchJobType jobTyp, String srcSys, String tgtSys, String cid, String payloadFormat, String evntNm, String prevEvntNm, String cstmEvntNm, String prevCstmEvntNm, UseStatCd useStatCd, String rsnCd, String trnsCm, String crtUserId, Timestamp crtDt, String mdfyUserId, Timestamp mdfyDt, Timestamp fnlEvntDt, String tid) {
         this.refObjId = refObjId;
         this.siteId = siteId;
         this.jobId = jobId;
         this.jobTyp = jobTyp;
-        this.paraNm = paraNm;
-        this.paraQuery = paraQuery;
+        this.srcSys = srcSys;
+        this.tgtSys = tgtSys;
+        this.cid = cid;
+        this.payloadFormat = payloadFormat;
         this.evntNm = evntNm;
         this.prevEvntNm = prevEvntNm;
         this.cstmEvntNm = cstmEvntNm;
@@ -75,13 +62,15 @@ public class WhBatchMsgJobPara {
         this.tid = tid;
     }
 
-    public WhBatchMsgJobPara(WnBatchMsgJobPara vo) {
+    public WhBatchMsgJobDto(WnBatchMsgJob vo) {
         this.refObjId = vo.getObjId();
         this.siteId = vo.getSiteId();
         this.jobId = vo.getJobId();
         this.jobTyp = vo.getJobTyp();
-        this.paraNm = vo.getParaNm();
-        this.paraQuery = vo.getParaQuery();
+        this.srcSys = vo.getSrcSys();
+        this.tgtSys = vo.getTgtSys();
+        this.cid = vo.getCid();
+        this.payloadFormat = vo.getPayloadFormat();
         this.evntNm = vo.getEvntNm();
         this.prevEvntNm = vo.getPrevEvntNm();
         this.cstmEvntNm = vo.getCstmEvntNm();
@@ -95,5 +84,29 @@ public class WhBatchMsgJobPara {
         this.mdfyDt = vo.getMdfyDt();
         this.fnlEvntDt = vo.getFnlEvntDt();
         this.tid = vo.getTid();
+    }
+
+    public WhBatchMsgJob toEntity(){
+        return WhBatchMsgJob.builder()
+                .refObjId(refObjId)
+                .siteId(siteId)
+                .jobId(jobId)
+                .jobTyp(jobTyp)
+                .srcSys(srcSys)
+                .tgtSys(tgtSys)
+                .cid(cid)
+                .payloadFormat(payloadFormat)
+                .evntNm(evntNm)
+                .prevEvntNm(prevEvntNm)
+                .cstmEvntNm(cstmEvntNm)
+                .prevCstmEvntNm(prevCstmEvntNm)
+                .useStatCd(useStatCd)
+                .rsnCd(rsnCd)
+                .trnsCm(trnsCm)
+                .crtDt(crtDt)
+                .mdfyDt(mdfyDt)
+                .fnlEvntDt(fnlEvntDt)
+                .tid(tid)
+                .build();
     }
 }
