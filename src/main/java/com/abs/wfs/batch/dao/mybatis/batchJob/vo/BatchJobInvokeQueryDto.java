@@ -10,14 +10,6 @@ public class BatchJobInvokeQueryDto {
     String jobTyp;
     String jobDesc;
 
-    Integer maxOccur;
-    Integer crntOccur;
-
-    Integer hourDiff;
-    Integer minDiff;
-    Integer totalDiff;
-
     String invokeUnit;
     Integer invokeVal;
-    String invokeYn;
 }

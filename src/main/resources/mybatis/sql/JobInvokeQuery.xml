@@ -5,45 +5,24 @@
 
     <select id="batchJobInvokeQuery"
             resultType="com.abs.wfs.batch.dao.mybatis.batchJob.vo.BatchJobInvokeQueryDto">
-        SELECT *
-        FROM (
-                 SELECT
-                     job_id,
-                     job_typ,
-                     job_desc,
-                     max_occur,
-                     crnt_occur,
-                     HOUR_DIFF,
-                     MIN_DIFF,
-                     TOTAL_DIFF,
-                     INVOKE_UNIT,
-                     INVOKE_VAL,
-                     USE_STAT_CD,
-                     CASE
-                         -- 시간 단위
-                         WHEN INVOKE_UNIT = 'H' AND MOD(TOTAL_DIFF,　INVOKE_VAL * 60) = 0 THEN 'Y'
-                         WHEN INVOKE_UNIT = 'M' AND MOD(TOTAL_DIFF, INVOKE_VAL) = 0 THEN 'Y' ELSE 'N'
-                         END AS INVOKE_YN
-                 FROM (
-                          SELECT
-                              EXTRACT(HOUR FROM (SYSDATE - JOB_START_DT)) * 60 AS HOUR_DIFF,
-                              EXTRACT(MINUTE FROM (SYSDATE - JOB_START_DT)) AS MIN_DIFF,
-                              TO_NUMBER(EXTRACT(HOUR FROM (SYSDATE - JOB_START_DT)) * 60) + TO_NUMBER(EXTRACT(MINUTE FROM (SYSDATE - JOB_START_DT))) AS TOTAL_DIFF,
-                              INVOKE_UNIT,
-                              INVOKE_VAL,
-                              job_id,
-                              job_typ,
-                              job_desc,
-                              max_occur,
-                              crnt_occur,
-                              USE_STAT_CD
-                          FROM
-                              WN_BATCH_JOB
-                      )
-             )
+        SELECT
+        JOB_ID,
+        JOB_TYP,
+        JOB_DESC,
+        INVOKE_UNIT,
+        INVOKE_VAL
+        FROM
+        WN_BATCH_JOB wbj
         WHERE 1=1
-          AND INVOKE_YN = 'Y'
-          AND USE_STAT_CD = 'Usable'
+        AND (
+        (INVOKE_UNIT = 'M' AND MOD(((SYSDATE - JOB_START_DATE) * 24 * 60), INVOKE_VAL) &lt; 1)
+        OR
+        (INVOKE_UNIT = 'H' AND MOD(((SYSDATE - JOB_START_DATE) * 24 * 60), INVOKE_VAL * 60) &lt; 1)
+        OR
+        (INVOKE_UNIT = 'D' AND MOD(((SYSDATE - JOB_START_DATE) * 24 * 60), INVOKE_VAL * 24 * 60) &lt; 1)
+        )
+        AND USE_STAT_CD = 'Usable'
+        AND JOB_START_DATE &lt; SYSDATE
 
     </select>
 </mapper>
